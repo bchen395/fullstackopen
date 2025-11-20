@@ -43,19 +43,20 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    const total = persons.length
-    const now = new Date();
-    response.send(`<div>
-                        Phonebook has info for ${total} people
+    Person.countDocuments({}).then(count => {
+      const now = new Date();
+      response.send(`<div>
+                        Phonebook has info for ${count} people
                     </div>
                     <div>
                         ${now}
                     </div>
                     `)
-}) 
+    }) 
+    })
 
 app.get('/api/persons/:id', (request, response) => {
-    Person.findByID(request.params.id).then(note => {
+    Person.findById(request.params.id).then(note => {
         response.json(note)
     })
     .catch(error => next(error))
@@ -69,7 +70,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
        .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     console.log(body)
     if (!body.name) {
@@ -92,6 +93,7 @@ app.post('/api/persons', (request, response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -117,7 +119,12 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'AxiosError') {
+    return response.status(400).send({ error: 'Name too short' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+  
 
   next(error)
 }
