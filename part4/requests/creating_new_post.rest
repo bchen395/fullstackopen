@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pY290aGV0aGlyZCIsImlkIjoiNjk0MTlmMGU4MDFlNWExM2I2MjFjYjc0IiwiaWF0IjoxNzY1OTA4MjU1fQ.IBopWfiLbeGatcijxEE-RU1oOg08uMQr47eM2EVo92c
+
+{
+    "title": "First blog",
+    "author": "Ben",
+    "url": "123",
+    "likes": 123
+}
